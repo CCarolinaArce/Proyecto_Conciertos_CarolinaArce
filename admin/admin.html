@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración - Conciertos</title>
+    <link rel="stylesheet" href="../CSS/admin-styles.css">
+</head>
+<body>
+
+    <div id="admin-login-section">
+        <div class="login-container">
+            <h2>Acceso Administrador</h2>
+            <form id="admin-login-form">
+                <input type="email" id="email" required placeholder="admin@mail.com">
+                <input type="password" id="password" required placeholder="123456">
+                <button type="submit" class="btn">Ingresar</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="admin-dashboard-section" style="display: none;">
+        <header>
+            <h1>Panel de Administración</h1>
+            <button id="logout-btn" class="btn">Cerrar Sesión</button>
+        </header>
+        
+        <nav class="admin-nav">
+            <button onclick="showSection('categories')" class="btn">Categorías</button>
+            <button onclick="showSection('events')" class="btn">Eventos</button>
+            <button onclick="showSection('sales')" class="btn">Ventas</button>
+        </nav>
+
+        <main>
+            <section id="section-categories" class="admin-section">
+                <h2>Gestión de Categorías</h2>
+                <form id="form-category">
+                    <input type="hidden" id="cat-id">
+                    <input type="text" id="cat-name" required placeholder="Nombre Categoría">
+                    <input type="text" id="cat-desc" required placeholder="Descripción">
+                    <button type="submit" class="btn">Guardar Categoría</button>
+                </form>
+                <ul id="list-categories"></ul>
+            </section>
+
+            <section id="section-events" class="admin-section" style="display: none;">
+                <h2>Gestión de Eventos</h2>
+                <form id="form-event">
+                    <input type="hidden" id="ev-id">
+                    <input type="text" id="ev-code" required placeholder="Código (ej. EV-01)">
+                    <input type="text" id="ev-name" required placeholder="Nombre del Evento">
+                    <select id="ev-category" required></select>
+                    <input type="number" id="ev-price" required placeholder="Precio">
+                    <input type="date" id="ev-date" required>
+                    <input type="time" id="ev-time" required>
+                    <input type="text" id="ev-city" required placeholder="Ciudad">
+                    <input type="url" id="ev-image" required placeholder="URL de la imagen">
+                    <textarea id="ev-desc" required placeholder="Descripción del evento"></textarea>
+                    <button type="submit" class="btn">Guardar Evento</button>
+                </form>
+                <div id="list-events"></div>
+            </section>
+
+            <section id="section-sales" class="admin-section" style="display: none;">
+                <h2>Historial de Ventas</h2>
+                <table border="1" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Ciudad</th>
+                            <th>Comprador</th>
+                            <th>Total</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="list-sales"></tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <script src="../JS/store.js"></script>
+    <script src="../JS/admin.js"></script>
+</body>
+</html>
