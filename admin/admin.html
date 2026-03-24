@@ -40,7 +40,8 @@
                 <h3>Admin</h3>
             </div>
             <div class="nav-links">
-                <button class="nav-btn active" onclick="adminApp.navigate('events')"><span class="material-symbols-outlined">event</span> Eventos</button>
+                <button class="nav-btn active" onclick="adminApp.navigate('overview')"><span class="material-symbols-outlined">dashboard</span> Inicio</button>
+                <button class="nav-btn" onclick="adminApp.navigate('events')"><span class="material-symbols-outlined">event</span> Eventos</button>
                 <button class="nav-btn" onclick="adminApp.navigate('categories')"><span class="material-symbols-outlined">category</span> Categorías</button>
                 <button class="nav-btn" onclick="adminApp.navigate('sales')"><span class="material-symbols-outlined">receipt_long</span> Ventas</button>
             </div>
@@ -49,7 +50,66 @@
 
         <main class="dashboard-content">
             
-            <div id="subview-events" class="sub-view active">
+            <div id="subview-overview" class="sub-view active">
+                <div style="margin-bottom: 30px;">
+                    <h2 style="font-size: 1.8rem; margin-bottom: 5px;">Vista General</h2>
+                    <p class="subtitle" style="margin-bottom: 0;">Bienvenido de nuevo, aquí tienes el resumen de hoy.</p>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-icon"><span class="material-symbols-outlined">calendar_month</span></div>
+                            <div class="kpi-trend positive"><span class="material-symbols-outlined">trending_up</span> +12%</div>
+                        </div>
+                        <p class="kpi-label">TOTAL EVENTOS</p>
+                        <h3 class="kpi-value" id="kpi-total-events">0</h3>
+                        <div class="kpi-bar"><div class="kpi-progress" style="width: 70%;"></div></div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-icon"><span class="material-symbols-outlined">payments</span></div>
+                            <div class="kpi-trend positive"><span class="material-symbols-outlined">trending_up</span> +8%</div>
+                        </div>
+                        <p class="kpi-label">TOTAL VENTAS</p>
+                        <h3 class="kpi-value" id="kpi-total-sales">$0</h3>
+                        <div class="kpi-bar"><div class="kpi-progress" style="width: 85%;"></div></div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <div class="kpi-icon"><span class="material-symbols-outlined">category</span></div>
+                            <div class="kpi-trend negative"><span class="material-symbols-outlined">trending_down</span> -2%</div>
+                        </div>
+                        <p class="kpi-label">CATEGORÍAS ACTIVAS</p>
+                        <h3 class="kpi-value" id="kpi-total-categories">0</h3>
+                        <div class="kpi-bar"><div class="kpi-progress" style="width: 40%;"></div></div>
+                    </div>
+                </div>
+
+                <div class="recent-section" style="margin-top: 40px;">
+                    <div class="header-action">
+                        <h3 style="font-size: 1.3rem;">Próximos Eventos</h3>
+                        <a href="#" onclick="adminApp.navigate('events')" style="color: var(--primary); text-decoration: none; font-size: 0.9rem; font-weight: 600;">Ver todos</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Evento</th>
+                                    <th>Categoría</th>
+                                    <th>Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody id="overview-events-list">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="subview-events" class="sub-view" style="display: none;">
                 <div class="header-action">
                     <h2>Gestión de Eventos</h2>
                     <button class="btn-primary" onclick="adminApp.toggleForm('event-form-container')">+ Crear Evento</button>
@@ -110,7 +170,7 @@
 
             <div id="subview-sales" class="sub-view" style="display: none;">
                 <h2>Historial de Ventas</h2>
-                <div class="table-responsive">
+                <div class="table-responsive" style="margin-top: 20px;">
                     <table class="admin-table">
                         <thead>
                             <tr>
@@ -122,7 +182,8 @@
                                 <th>Acción</th>
                             </tr>
                         </thead>
-                        <tbody id="admin-sales-list"></tbody>
+                        <tbody id="admin-sales-list">
+                            </tbody>
                     </table>
                 </div>
             </div>

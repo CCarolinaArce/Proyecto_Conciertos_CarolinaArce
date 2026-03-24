@@ -42,10 +42,10 @@ const adminApp = {
     showDashboard: function() {
         document.getElementById('view-login').style.display = 'none';
         document.getElementById('view-dashboard').style.display = 'flex';
-        this.navigate('events'); // Cargar eventos por defecto
+        this.navigate('overview'); 
     },
 
-    // --- NAVEGACIÓN SPA (DASHBOARD) ---
+   // --- NAVEGACIÓN SPA (DASHBOARD) ---
     navigate: function(subView) {
         // Ocultar todas las sub-vistas
         document.querySelectorAll('.sub-view').forEach(v => v.style.display = 'none');
@@ -53,15 +53,62 @@ const adminApp = {
 
         // Actualizar botones del nav
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-        event.currentTarget.classList?.add('active');
+        if(event) event.currentTarget.classList?.add('active');
 
         // Renderizar datos correspondientes
+        if (subView === 'overview') this.renderOverview(); // <-- NUEVO
         if (subView === 'categories') this.renderCategories();
         if (subView === 'events') {
             this.updateCategorySelect();
             this.renderEvents();
         }
         if (subView === 'sales') this.renderSales();
+    },
+
+    // --- MÓDULO: VISTA GENERAL (DASHBOARD) ---
+    renderOverview: function() {
+        const events = getData('events');
+        const sales = getData('sales');
+        const categories = getData('categories');
+
+        // 1. Calcular Totales
+        const totalEvents = events.length;
+        const totalSales = sales.reduce((acc, sale) => acc + sale.total, 0);
+        const totalCategories = categories.length;
+
+        // 2. Pintar los números en las tarjetas
+        document.getElementById('kpi-total-events').innerText = totalEvents;
+        document.getElementById('kpi-total-sales').innerText = '$' + totalSales.toLocaleString('es-CO');
+        document.getElementById('kpi-total-categories').innerText = totalCategories;
+
+        // 3. Pintar los próximos eventos (Tomamos los primeros 3)
+        const overviewEventsList = document.getElementById('overview-events-list');
+        
+        // Ordenar eventos por fecha más próxima (opcional, aquí solo limitamos a 3 para el resumen)
+        const recentEvents = events.slice(0, 3); 
+
+        if (recentEvents.length === 0) {
+            overviewEventsList.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted);">No hay eventos programados.</td></tr>`;
+            return;
+        }
+
+        overviewEventsList.innerHTML = recentEvents.map(ev => `
+            <tr>
+                <td>
+                    <div style="display:flex; align-items:center; gap: 15px;">
+                        <div style="width: 35px; height: 45px; background: linear-gradient(135deg, var(--primary) 0%, #ff7eb3 100%); border-radius: 8px;"></div>
+                        <div>
+                            <h4 style="margin: 0; color: var(--text-main); font-size: 0.95rem;">${ev.name}</h4>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">${ev.date.split('-')[0]}</span> </div>
+                    </div>
+                </td>
+                <td><span class="badge-category">${ev.category}</span></td>
+                <td style="color: var(--text-muted); font-size: 0.85rem;">
+                    ${ev.date}<br>
+                    <span style="font-size: 0.75rem;">${ev.time}</span>
+                </td>
+            </tr>
+        `).join('');
     },
 
     toggleForm: function(formId) {
