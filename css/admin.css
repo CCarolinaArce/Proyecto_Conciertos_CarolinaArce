@@ -1,0 +1,175 @@
+
+:root {
+    --primary: #960df2;
+    --primary-hover: #7b0bc7;
+    --bg-dark: #1b1022;
+    --bg-card: rgba(150, 13, 242, 0.05);
+    --border: rgba(150, 13, 242, 0.2);
+    --text: #f8fafc;
+    --text-muted: #94a3b8;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text);
+    margin: 0;
+    min-height: 100vh;
+}
+
+/* --- Sección de Login --- */
+#admin-login-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: radial-gradient(circle at center, #2d1b3d 0%, #1b1022 100%);
+}
+
+.login-container {
+    background: var(--bg-card);
+    padding: 2.5rem;
+    border-radius: 1.5rem;
+    border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+/* --- Panel de Administración (Dashboard) --- */
+header {
+    background: rgba(27, 16, 34, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-nav {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: rgba(150, 13, 242, 0.03);
+}
+
+/* --- Formularios y Entradas --- */
+form {
+    display: grid;
+    gap: 1rem;
+    background: var(--bg-card);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    margin-bottom: 2rem;
+}
+
+input, select, textarea {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    color: white;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--primary);
+    background: rgba(150, 13, 242, 0.1);
+}
+
+/* --- Botones --- */
+.btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 0.6rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+/* --- Tablas de Datos --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background: var(--bg-card);
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+th {
+    background: rgba(150, 13, 242, 0.1);
+    color: var(--primary);
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+}
+
+tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* --- Secciones de Gestión --- */
+.admin-section {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.admin-section h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    border-left: 4px solid var(--primary);
+    padding-left: 1rem;
+}
+
+/* --- Listas (Categorías/Eventos) --- */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: var(--bg-card);
+    margin-bottom: 0.5rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid transparent;
+}
+
+li:hover {
+    border-color: var(--border);
+}
+
+/* --- Ajuste para Inputs de Fecha y Hora --- */
+input[type="date"], input[type="time"] {
+    color-scheme: dark; /* Hace que el icono del calendario sea blanco */
+}

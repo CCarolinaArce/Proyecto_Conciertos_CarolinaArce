@@ -1,0 +1,102 @@
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conciertos Conectados</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/cliente.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="logo">
+            <span class="material-symbols-outlined logo-icon">confirmation_number</span>
+            <h1>Conciertos Conectados</h1>
+        </div>
+        <div class="header-actions">
+            <span class="material-symbols-outlined search-trigger">search</span>
+            <div class="cart-trigger" onclick="app.navigate('cart')">
+                <span class="material-symbols-outlined">shopping_cart</span>
+                <span id="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <main id="app-container">
+        <section id="view-home" class="spa-view active">
+            <div class="hero">
+                <h2>Próximos Conciertos</h2>
+                <p>Encuentra los mejores eventos en vivo cerca de ti.</p>
+            </div>
+            
+            <div class="filters">
+                <div class="search-box">
+                    <span class="material-symbols-outlined">search</span>
+                    <input type="text" id="search-input" placeholder="Buscar por artista o evento...">
+                </div>
+                <div class="filter-selects">
+                    <select id="filter-city">
+                        <option value="">Todas las ciudades</option>
+                        <option value="Bogotá">Bogotá</option>
+                        <option value="Medellín">Medellín</option>
+                        <option value="Barranquilla">Barranquilla</option>
+                        <option value="Bucaramanga">Bucaramanga</option>
+                    </select>
+                    <select id="filter-category">
+                        <option value="">Categorías</option>
+                        </select>
+                </div>
+            </div>
+
+            <div id="events-grid" class="events-stack">
+                </div>
+        </section>
+
+        <section id="view-detail" class="spa-view">
+            </section>
+
+        <section id="view-cart" class="spa-view">
+            <div class="view-header">
+                <span class="material-symbols-outlined" onclick="app.navigate('home')">arrow_back</span>
+                <h2>Tu Pedido</h2>
+            </div>
+            <div id="cart-items"></div>
+            
+            <div class="checkout-form">
+                <h3>Datos de Compra</h3>
+                <form id="form-checkout">
+                    <input type="text" id="buyer-id" placeholder="Cédula" required>
+                    <input type="text" id="buyer-name" placeholder="Nombre Completo" required>
+                    <input type="email" id="buyer-email" placeholder="Correo Electrónico" required>
+                    <input type="text" id="buyer-phone" placeholder="Teléfono" required>
+                    <input type="text" id="buyer-address" placeholder="Dirección" required>
+                    <button type="submit" class="btn-primary">Pagar $<span id="cart-total">0</span></button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="app.navigate('home')">
+            <span class="material-symbols-outlined">home</span>
+            <span>Inicio</span>
+        </div>
+        <div class="nav-item">
+            <span class="material-symbols-outlined">explore</span>
+            <span>Explorar</span>
+        </div>
+        <div class="nav-item" onclick="app.navigate('cart')">
+            <span class="material-symbols-outlined">shopping_bag</span>
+            <span>Tickets</span>
+        </div>
+    </nav>
+
+    <script src="../JS/storage.js"></script>
+    <script src="../JS/components.js"></script>
+    <script src="../JS/client.js"></script>
+</body>
+</html>

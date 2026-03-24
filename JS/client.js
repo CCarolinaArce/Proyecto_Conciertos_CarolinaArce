@@ -1,224 +1,258 @@
-// js/client.js
 
-// DOMContentLoaded asegura que el código espere a que el HTML termine de cargar antes de ejecutarse
-document.addEventListener('DOMContentLoaded', () => {
-    // Seleccionamos los elementos clave de la interfaz
-    const eventsGrid = document.getElementById('events-grid');
-    const categoryFilter = document.getElementById('category-filter');
-    const cityFilter = document.getElementById('city-filter');
-    const searchInput = document.getElementById('search-input');
-    
-    // Obtenemos el carrito del localStorage o creamos un arreglo vacío si no existe
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+const app = {
+    // 1. Inicializar la aplicación
+    init: function() {
+        this.updateCartBadge();
+        this.loadFilters();
+        this.renderCatalog();
+        
+        // Listener para el formulario de checkout
+        document.getElementById('form-checkout').addEventListener('submit', (e) => this.handleCheckout(e));
+    },
 
-    // Llenamos la lista desplegable de categorías de manera dinámica
-    if (categoryFilter) {
-        const categories = Store.get('categories');
+    // 2. Navegación SPA (Cambio de vistas)
+    navigate: function(viewId) {
+        // Ocultar todas las vistas
+        document.querySelectorAll('.spa-view').forEach(view => {
+            view.classList.remove('active');
+        });
+
+        // Mostrar la vista solicitada
+        document.getElementById(`view-${viewId}`).classList.add('active');
+
+        // Actualizar los colores de la barra de navegación inferior
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        // Si vamos al carrito, renderizamos sus items
+        if (viewId === 'cart') {
+            this.renderCart();
+        }
+
+        window.scrollTo(0, 0); // Regresar al inicio de la página
+    },
+
+    // 3. Renderizar el catálogo de eventos usando el Web Component
+    renderCatalog: function(eventsData = getData('events')) {
+        const grid = document.getElementById('events-grid');
+        
+        if (eventsData.length === 0) {
+            grid.innerHTML = `
+                <div style="text-align: center; color: var(--text-muted); margin-top: 40px;">
+                    <span class="material-symbols-outlined" style="font-size: 40px;">sentiment_dissatisfied</span>
+                    <p>No se encontraron eventos con esos filtros.</p>
+                </div>`;
+            return;
+        }
+
+        // Usamos el custom element <event-card> creado en components.js
+        grid.innerHTML = eventsData.map(ev => `
+            <event-card 
+                data-id="${ev.id}"
+                data-title="${ev.name}"
+                data-price="${ev.price}"
+                data-date="${ev.date}"
+                data-city="${ev.city}"
+                data-image="${ev.image}"
+            ></event-card>
+        `).join('');
+    },
+
+    // 4. Cargar categorías en el select y configurar listeners de los filtros
+    loadFilters: function() {
+        const categories = getData('categories');
+        const catSelect = document.getElementById('filter-category');
+        
         categories.forEach(cat => {
-            const option = document.createElement('option');
-            option.value = cat.id;
-            option.textContent = cat.name;
-            categoryFilter.appendChild(option);
-        });
-    }
-
-    // Renderizar eventos en index.html
-    const renderEvents = () => {
-        if (!eventsGrid) return;
-        const events = Store.get('events');
-        const searchTerm = searchInput.value.toLowerCase();
-        const selectedCity = cityFilter.value;
-        const selectedCategory = categoryFilter.value;
-
-        // Limpiamos la grilla antes de volver a dibujar
-        eventsGrid.innerHTML = '';
-
-        // Filtramos los eventos comparando la búsqueda, la ciudad y la categoría
-        const filteredEvents = events.filter(e => {
-            const matchName = e.name.toLowerCase().includes(searchTerm);
-            const matchCity = selectedCity ? e.city === selectedCity : true;
-            const matchCategory = selectedCategory ? e.categoryId === selectedCategory : true;
-            return matchName && matchCity && matchCategory;
+            catSelect.innerHTML += `<option value="${cat.name}">${cat.name}</option>`;
         });
 
-        // Creamos nuestro componente <event-card> por cada evento que pasó el filtro
-        filteredEvents.forEach(e => {
-            // * REUTILIZACIÓN DEL COMPONENTE: En este bucle instanciamos <event-card> múltiples veces según los eventos existan.
-            const card = document.createElement('event-card');
-            card.setAttribute('id', e.id);
-            card.setAttribute('name', e.name);
-            card.setAttribute('date', e.date);
-            card.setAttribute('time', e.time);
-            card.setAttribute('price', e.price);
-            card.setAttribute('image', e.image);
-            card.setAttribute('city', e.city);
-            eventsGrid.appendChild(card);
+        // Configurar los detectores de cambio (event listeners)
+        document.getElementById('search-input').addEventListener('input', () => this.applyFilters());
+        document.getElementById('filter-city').addEventListener('change', () => this.applyFilters());
+        document.getElementById('filter-category').addEventListener('change', () => this.applyFilters());
+    },
+
+    // 5. Aplicar los filtros en tiempo real
+    applyFilters: function() {
+        const searchTerm = document.getElementById('search-input').value.toLowerCase();
+        const city = document.getElementById('filter-city').value;
+        const category = document.getElementById('filter-category').value;
+        
+        const allEvents = getData('events');
+        
+        const filtered = allEvents.filter(ev => {
+            const matchName = ev.name.toLowerCase().includes(searchTerm);
+            const matchCity = city ? ev.city === city : true;
+            const matchCat = category ? ev.category === category : true;
+            
+            return matchName && matchCity && matchCat;
         });
-    };
 
-    if (eventsGrid) {
-        renderEvents();
-        searchInput.addEventListener('input', renderEvents);
-        cityFilter.addEventListener('change', renderEvents);
-        categoryFilter.addEventListener('change', renderEvents);
-    }
+        this.renderCatalog(filtered);
+    },
 
-    // Lógica para añadir al carrito (escucha el evento del Web Component)
-    document.addEventListener('add-to-cart', (e) => {
-        const item = e.detail;
-        cart.push(item);
-        localStorage.setItem('cart', JSON.stringify(cart));
-        updateCartCount();
-        alert('¡Evento añadido al carrito exitosamente!');
-    });
+    // 6. Vista Detalle del Evento
+    showDetail: function(id) {
+        const event = getData('events').find(e => e.id === id);
+        if(!event) return;
+        
+        const detailContainer = document.getElementById('view-detail');
+        detailContainer.innerHTML = `
+            <div class="view-header" style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                <span class="material-symbols-outlined" onclick="app.navigate('home')" style="cursor: pointer; font-size: 24px; color: var(--primary);">arrow_back</span>
+                <h2 style="margin: 0;">Detalles del Evento</h2>
+            </div>
+            
+            <img src="${event.image}" style="width: 100%; height: 250px; object-fit: cover; border-radius: 20px; margin-bottom: 20px; border: 1px solid var(--border);">
+            
+            <h2 style="color: var(--primary); margin-bottom: 5px; font-size: 1.8rem;">${event.name}</h2>
+            
+            <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px;">
+                <span style="display: flex; align-items: center; gap: 5px;"><span class="material-symbols-outlined" style="font-size: 18px;">calendar_today</span> ${event.date} • ${event.time}</span>
+                <span style="display: flex; align-items: center; gap: 5px;"><span class="material-symbols-outlined" style="font-size: 18px;">location_on</span> ${event.city}</span>
+                <span style="display: flex; align-items: center; gap: 5px;"><span class="material-symbols-outlined" style="font-size: 18px;">category</span> ${event.category}</span>
+            </div>
+            
+            <p style="margin-bottom: 30px; line-height: 1.6; color: #cbd5e1;">${event.desc}</p>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(168, 85, 247, 0.1); padding: 20px; border-radius: 15px; border: 1px solid var(--primary);">
+                <div>
+                    <p style="margin: 0; color: var(--text-muted); font-size: 0.8rem;">Entrada General</p>
+                    <h3 style="margin: 0; font-size: 1.5rem;">$${Number(event.price).toLocaleString('es-CO')}</h3>
+                </div>
+                <button class="btn-primary" style="width: auto; padding: 12px 25px;" onclick="app.addToCart('${event.id}')">Agregar al Carrito</button>
+            </div>
+        `;
+        
+        this.navigate('detail');
+    },
 
-    // Lógica del Carrito
-    const cartBtn = document.getElementById('cart-btn');
-    const cartModal = document.getElementById('cart-modal');
-    const closeCartBtn = document.getElementById('close-cart');
-    const cartCount = document.getElementById('cart-count');
+    // 7. Lógica del Carrito: Agregar
+    addToCart: function(id) {
+        const event = getData('events').find(e => e.id === id);
+        if(!event) return;
+        
+        let cart = getData('cart');
+        
+        // Verificar si ya está en el carrito para sumar cantidad
+        const existingItem = cart.find(item => item.id === id);
+        if(existingItem) {
+            existingItem.qty = (existingItem.qty || 1) + 1;
+        } else {
+            event.qty = 1; // Asignamos cantidad inicial
+            cart.push(event);
+        }
+        
+        saveData('cart', cart);
+        this.updateCartBadge();
+        
+        // Mensaje de confirmación (Requisito del proyecto)
+        alert(`¡Añadiste exitosamente una entrada para "${event.name}"!`);
+    },
 
-    const updateCartCount = () => {
-        if (cartCount) cartCount.textContent = cart.length;
-    };
-    updateCartCount();
-
-    if (cartBtn) {
-        cartBtn.addEventListener('click', () => {
-            renderCartItems();
-            // Mostramos la ventana flotante (modal) del carrito
-            cartModal.style.display = 'block';
-        });
-    }
-
-    if (closeCartBtn) {
-        closeCartBtn.addEventListener('click', () => {
-            cartModal.style.display = 'none';
-        });
-    }
-
-    // Dibuja la lista de productos dentro del carrito
-    const renderCartItems = () => {
-        const cartItemsContainer = document.getElementById('cart-items');
-        const cartTotalSpan = document.getElementById('cart-total');
-        cartItemsContainer.innerHTML = '';
+    // 8. Lógica del Carrito: Renderizar
+    renderCart: function() {
+        const cart = getData('cart');
+        const container = document.getElementById('cart-items');
+        const totalEl = document.getElementById('cart-total');
+        
+        if(cart.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; color: var(--text-muted); padding: 30px 0;">
+                    <span class="material-symbols-outlined" style="font-size: 40px;">shopping_cart</span>
+                    <p>Tu carrito está vacío.</p>
+                </div>`;
+            totalEl.innerText = '0';
+            return;
+        }
+        
         let total = 0;
-
-        cart.forEach((item, index) => {
-            total += parseFloat(item.price);
-            cartItemsContainer.innerHTML += `
-                <div class="cart-item">
-                    <img src="${item.image}" width="50">
-                    <span>${item.name}</span>
-                    <span>$${item.price}</span>
-                    <button onclick="removeFromCart(${index})">X</button>
+        container.innerHTML = cart.map((item) => {
+            const subtotal = item.price * item.qty;
+            total += subtotal;
+            return `
+                <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); padding: 15px; margin-bottom: 15px; border-radius: 15px; border: 1px solid var(--border);">
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <img src="${item.image}" style="width: 60px; height: 60px; border-radius: 10px; object-fit: cover;">
+                        <div>
+                            <h4 style="margin: 0; font-size: 1rem;">${item.name}</h4>
+                            <p style="margin: 5px 0 0 0; font-size: 0.8rem; color: var(--primary);">Cant: ${item.qty} x $${Number(item.price).toLocaleString('es-CO')}</p>
+                        </div>
+                    </div>
+                    <button onclick="app.removeFromCart('${item.id}')" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 8px; padding: 8px; cursor: pointer; display:flex; align-items:center;">
+                        <span class="material-symbols-outlined">delete</span>
+                    </button>
                 </div>
             `;
-        });
-        cartTotalSpan.textContent = total;
-    };
-
-    // Elimina un producto específico del carrito mediante su posición (index)
-    window.removeFromCart = (index) => {
-        cart.splice(index, 1);
-        localStorage.setItem('cart', JSON.stringify(cart));
-        renderCartItems();
-        updateCartCount();
-    };
-
-    // --- CHECKOUT (Procesar la compra) ---
-    const checkoutForm = document.getElementById('checkout-form');
-    if (checkoutForm) {
-        checkoutForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (cart.length === 0) {
-                alert('El carrito está vacío.');
-                return;
-            }
-
-            // Creamos un objeto con los datos del comprador obtenidos del formulario
-            const buyer = {
-                idNum: document.getElementById('buyer-id').value,
-                name: document.getElementById('buyer-name').value,
-                address: document.getElementById('buyer-address').value,
-                phone: document.getElementById('buyer-phone').value,
-                email: document.getElementById('buyer-email').value
-            };
-
-            // Armamos la boleta de venta (id único basado en fecha, datos del comprador, productos y total)
-            const newSale = {
-                id: Date.now().toString(),
-                date: new Date().toISOString(),
-                buyer,
-                items: cart,
-                total: cart.reduce((sum, item) => sum + parseFloat(item.price), 0),
-                city: cart[0].city // Tomamos la ciudad del primer evento como referencia
-            };
-
-            // Guardamos la nueva venta en nuestra "base de datos" (localStorage)
-            const sales = Store.get('sales');
-            sales.push(newSale);
-            Store.save('sales', sales);
-
-            // Vaciamos el carrito tras comprar
-            cart = [];
-            localStorage.removeItem('cart');
-            updateCartCount();
-            cartModal.style.display = 'none';
-            checkoutForm.reset();
-
-            alert('¡Compra realizada con éxito! Boleta asignada.');
-        });
-    }
-
-    // --- ENRUTADOR SPA (Single Page Application) ---
-    const router = () => {
-        const hash = window.location.hash || '#/'; // Obtiene la URL tras el "#" (Ej. #/detalle/123)
-        const mainView = document.getElementById('main-view'); // Vista que contiene los filtros y la grilla
-        const detailContainer = document.getElementById('event-detail-container');
+        }).join('');
         
-        if (hash.startsWith('#/detalle/')) {
-            // Si entramos al detalle, ocultamos la grilla
-            if (mainView) mainView.style.display = 'none';
-            if (detailContainer) {
-                detailContainer.style.display = 'block';
-                // Extraemos el ID de la URL y buscamos el evento
-                const eventId = hash.split('/')[2];
-                const events = Store.get('events');
-                const event = events.find(e => e.id === eventId);
+        totalEl.innerText = total.toLocaleString('es-CO');
+    },
 
-                if (event) {
-                    detailContainer.innerHTML = `
-                        <div class="event-detail">
-                            <button onclick="window.location.hash='#/'" style="margin-bottom: 20px;" class="btn">&larr; Volver</button>
-                            <br>
-                            <img src="${event.image}" alt="${event.name}" style="width:100%; max-width:600px;">
-                            <h2>${event.name}</h2>
-                            <p><strong>Descripción:</strong> ${event.description}</p>
-                            <p><strong>Fecha y Hora:</strong> ${event.date} a las ${event.time}</p>
-                            <p><strong>Ciudad:</strong> ${event.city}</p>
-                            <p><strong>Precio:</strong> $${event.price}</p>
-                            <button id="detail-add-cart" class="btn">Agregar al carrito</button>
-                        </div>
-                    `;
-                    document.getElementById('detail-add-cart').addEventListener('click', () => {
-                        cart.push({ id: event.id, name: event.name, price: event.price, image: event.image, city: event.city });
-                        localStorage.setItem('cart', JSON.stringify(cart));
-                        updateCartCount();
-                        alert('¡Evento añadido al carrito exitosamente!');
-                    });
-                } else {
-                    detailContainer.innerHTML = '<p>Evento no encontrado.</p>';
-                }
-            }
-        } else {
-            // Si no estamos en detalle, mostramos la grilla principal
-            if (mainView) mainView.style.display = 'block';
-            if (detailContainer) detailContainer.style.display = 'none';
+    // 9. Lógica del Carrito: Eliminar
+    removeFromCart: function(id) {
+        let cart = getData('cart');
+        cart = cart.filter(item => item.id !== id);
+        saveData('cart', cart);
+        
+        this.updateCartBadge();
+        this.renderCart(); // Re-renderizar para actualizar el total
+    },
+
+    // 10. Actualizar el contador de la burbuja flotante
+    updateCartBadge: function() {
+        const cart = getData('cart');
+        // Sumamos las cantidades de todos los items
+        const totalItems = cart.reduce((acc, item) => acc + (item.qty || 1), 0);
+        document.getElementById('cart-count').innerText = totalItems;
+    },
+
+    // 11. Procesar la compra (Checkout)
+    handleCheckout: function(e) {
+        e.preventDefault(); // Evitar que la página recargue
+        
+        const cart = getData('cart');
+        if(cart.length === 0) {
+            alert("No tienes eventos en el carrito para comprar.");
+            return;
         }
-    };
+        
+        // Construir el objeto de la venta
+        const sale = {
+            id: 'VTA-' + Math.floor(Math.random() * 1000000), // Generador simple de ID de ticket
+            date: new Date().toLocaleDateString('es-ES') + ' ' + new Date().toLocaleTimeString('es-ES'),
+            buyer: {
+                id: document.getElementById('buyer-id').value,
+                name: document.getElementById('buyer-name').value,
+                email: document.getElementById('buyer-email').value,
+                phone: document.getElementById('buyer-phone').value,
+                address: document.getElementById('buyer-address').value
+            },
+            items: cart,
+            total: cart.reduce((acc, item) => acc + (item.price * item.qty), 0)
+        };
+        
+        // Guardar la venta en el "servidor" (localStorage)
+        let sales = getData('sales');
+        sales.unshift(sale); // Guardarlo al inicio de la lista
+        saveData('sales', sales);
+        
+        // Limpiar el carrito y el formulario
+        saveData('cart', []);
+        document.getElementById('form-checkout').reset();
+        this.updateCartBadge();
+        
+        // Mensaje de éxito requerido por el proyecto
+        alert(`¡Compra realizada con éxito!\nBoleta asignada: ${sale.id}\nTe esperamos en el evento.`);
+        
+        // Volver al inicio
+        this.navigate('home');
+    }
+};
 
-    // Cada vez que cambia el "#" en la URL, se ejecuta el enrutador
-    window.addEventListener('hashchange', router);
-    router(); // Ejecutar al cargar la página por primera vez
+// Iniciar la aplicación cuando el DOM esté cargado
+document.addEventListener('DOMContentLoaded', () => {
+    app.init();
 });

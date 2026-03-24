@@ -1,90 +1,46 @@
-// js/components.js
 
-// Definimos una clase que hereda de HTMLElement para crear nuestra propia etiqueta HTML
-// * AQUI SE DEFINE EL COMPONENTE PERSONALIZADO (Web Component) <event-card>
+
 class EventCard extends HTMLElement {
     constructor() {
         super();
-        // attachShadow encapsula los estilos y el HTML para que no afecten ni se vean afectados por el resto de la página
-        this.attachShadow({ mode: 'open' });
     }
 
-    // Se ejecuta cuando el componente es insertado en el DOM
     connectedCallback() {
-        this.render();
-    }
+        const id = this.getAttribute('data-id');
+        const title = this.getAttribute('data-title');
+        const price = this.getAttribute('data-price');
+        const date = this.getAttribute('data-date');
+        const city = this.getAttribute('data-city');
+        const image = this.getAttribute('data-image');
 
-    // Le decimos al navegador qué atributos (ej. id, name, price) debe vigilar para detectar cambios
-    static get observedAttributes() {
-        return ['id', 'name', 'date', 'time', 'price', 'image', 'city'];
-    }
-
-    // Si algún atributo cambia, volvemos a dibujar (renderizar) el componente
-    attributeChangedCallback() {
-        this.render();
-    }
-
-    render() {
-        // Leemos los valores que pasamos desde el HTML
-        const id = this.getAttribute('id');
-        const name = this.getAttribute('name');
-        const date = this.getAttribute('date');
-        const time = this.getAttribute('time');
-        const price = this.getAttribute('price');
-        const image = this.getAttribute('image');
-        const city = this.getAttribute('city');
-
-        // Inyectamos el HTML y CSS exclusivo del componente
-        this.shadowRoot.innerHTML = `
+        this.innerHTML = `
             <style>
-                .card {
-                    border: 1px solid #ddd;
-                    border-radius: 8px;
-                    overflow: hidden;
-                    text-align: center;
-                    font-family: sans-serif;
-                    background: #fff;
-                }
-                .card img {
-                    width: 100%;
-                    height: 200px;
-                    object-fit: cover;
-                }
+                .card { background: var(--bg-card); border-radius: 20px; overflow: hidden; border: 1px solid var(--border); transition: 0.3s;}
+                .card img { width: 100%; height: 180px; object-fit: cover; }
                 .card-body { padding: 15px; }
-                .price { font-weight: bold; color: #2ecc71; font-size: 1.2em; }
-                .btn { 
-                    display: inline-block; padding: 10px 15px; margin-top: 10px;
-                    background: #3498db; color: white; text-decoration: none; border-radius: 4px; border: none; cursor: pointer;
-                }
+                .card-date { color: var(--primary); font-size: 0.8rem; font-weight: 600; margin-bottom: 5px; display: flex; align-items:center; gap: 5px;}
+                .card-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 5px;}
+                .card-city { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;}
+                .card-footer { display: flex; justify-content: space-between; align-items: center;}
+                .price { font-size: 1.2rem; font-weight: 800;}
+                .btn-add { background: var(--primary); width: 40px; height: 40px; border-radius: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer;}
             </style>
-            <div class="card">
-                <img src="${image}" alt="${name}">
+            <div class="card" onclick="app.showDetail('${id}')">
+                <img src="${image}" alt="${title}">
                 <div class="card-body">
-                    <h3>${name}</h3>
-                    <p>📍 ${city}</p>
-                    <p>📅 ${date} - ⏰ ${time}</p>
-                    <p class="price">$${price}</p>
-                    <a href="#/detalle/${id}" class="btn">Ver Detalle</a>
-                    <button class="btn btn-cart" data-id="${id}">Añadir al Carrito</button>
+                    <div class="card-date"><span class="material-symbols-outlined" style="font-size:14px">calendar_today</span>${date}</div>
+                    <div class="card-title">${title}</div>
+                    <div class="card-city"><span class="material-symbols-outlined" style="font-size:14px">location_on</span>${city}</div>
+                    <div class="card-footer">
+                        <span class="price">$${Number(price).toLocaleString('es-CO')}</span>
+                        <div class="btn-add" onclick="event.stopPropagation(); app.addToCart('${id}')">
+                            <span class="material-symbols-outlined">shopping_cart</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
-
-        // Buscamos el botón dentro de nuestro componente y le asignamos la función de añadir al carrito
-        const btnCart = this.shadowRoot.querySelector('.btn-cart');
-        if (btnCart) {
-            btnCart.addEventListener('click', () => {
-                // Disparamos un evento "personalizado" llamado 'add-to-cart' que será escuchado por client.js
-                this.dispatchEvent(new CustomEvent('add-to-cart', {
-                    detail: { id, name, price, image },
-                    bubbles: true,
-                    composed: true
-                }));
-            });
-        }
     }
 }
 
-// Registramos oficialmente la nueva etiqueta en el navegador
-// * REGISTRO DEL COMPONENTE: Convierte nuestra clase en una etiqueta HTML válida y reutilizable.
 customElements.define('event-card', EventCard);
