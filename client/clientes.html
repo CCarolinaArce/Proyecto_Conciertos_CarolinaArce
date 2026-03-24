@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conciertos Conectados</title>
+    <title>Conciertos Conectados - Cliente</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link rel="stylesheet" href="../css/cliente.css">
@@ -12,20 +11,24 @@
 <body>
 
     <header class="main-header">
-        <div class="logo">
+        <div class="logo" onclick="app.navigate('home')" style="cursor: pointer;">
             <span class="material-symbols-outlined logo-icon">confirmation_number</span>
-            <h1>Conciertos Conectados</h1>
+            <h1>Conectados</h1>
         </div>
         <div class="header-actions">
-            <span class="material-symbols-outlined search-trigger">search</span>
+            <span class="material-symbols-outlined search-trigger" onclick="app.navigate('home')">search</span>
             <div class="cart-trigger" onclick="app.navigate('cart')">
                 <span class="material-symbols-outlined">shopping_cart</span>
                 <span id="cart-count">0</span>
+            </div>
+            <div class="user-profile" onclick="app.navigate('profile')">
+                <span class="material-symbols-outlined" style="font-size: 28px; color: var(--primary);">account_circle</span>
             </div>
         </div>
     </header>
 
     <main id="app-container">
+        
         <section id="view-home" class="spa-view active">
             <div class="hero">
                 <h2>Próximos Conciertos</h2>
@@ -51,8 +54,7 @@
                 </div>
             </div>
 
-            <div id="events-grid" class="events-stack">
-                </div>
+            <div id="events-grid" class="events-stack"></div>
         </section>
 
         <section id="view-detail" class="spa-view">
@@ -60,23 +62,51 @@
 
         <section id="view-cart" class="spa-view">
             <div class="view-header">
-                <span class="material-symbols-outlined" onclick="app.navigate('home')">arrow_back</span>
+                <span class="material-symbols-outlined back-btn" onclick="app.navigate('home')">arrow_back</span>
                 <h2>Tu Pedido</h2>
             </div>
-            <div id="cart-items"></div>
             
-            <div class="checkout-form">
+            <div id="cart-items">
+                </div>
+            
+            <div class="checkout-form" id="checkout-section" style="display: none;">
                 <h3>Datos de Compra</h3>
                 <form id="form-checkout">
-                    <input type="text" id="buyer-id" placeholder="Cédula" required>
+                    <input type="text" id="buyer-id" placeholder="Cédula / Documento" required>
                     <input type="text" id="buyer-name" placeholder="Nombre Completo" required>
                     <input type="email" id="buyer-email" placeholder="Correo Electrónico" required>
                     <input type="text" id="buyer-phone" placeholder="Teléfono" required>
                     <input type="text" id="buyer-address" placeholder="Dirección" required>
-                    <button type="submit" class="btn-primary">Pagar $<span id="cart-total">0</span></button>
+                    
+                    <div class="total-bar">
+                        <span>Total a pagar:</span>
+                        <span class="total-price">$<span id="cart-total">0</span></span>
+                    </div>
+                    <button type="submit" class="btn-primary">Finalizar Compra</button>
                 </form>
             </div>
         </section>
+
+        <section id="view-profile" class="spa-view">
+            <div class="view-header">
+                <h2>Mi Perfil</h2>
+            </div>
+            
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <span class="material-symbols-outlined" style="font-size: 50px;">account_circle</span>
+                </div>
+                <div class="profile-info">
+                    <h3 id="profile-name">Usuario Invitado</h3>
+                    <p id="profile-email">Haz una compra para registrar tus datos</p>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 35px; margin-bottom: 20px; color: var(--primary);">Mis Tickets</h3>
+            <div id="user-tickets-list" class="tickets-stack">
+                </div>
+        </section>
+
     </main>
 
     <nav class="bottom-nav">
@@ -84,13 +114,17 @@
             <span class="material-symbols-outlined">home</span>
             <span>Inicio</span>
         </div>
-        <div class="nav-item">
+        <div class="nav-item" onclick="app.navigate('home')">
             <span class="material-symbols-outlined">explore</span>
             <span>Explorar</span>
         </div>
         <div class="nav-item" onclick="app.navigate('cart')">
-            <span class="material-symbols-outlined">shopping_bag</span>
+            <span class="material-symbols-outlined">local_activity</span>
             <span>Tickets</span>
+        </div>
+        <div class="nav-item" onclick="app.navigate('profile')">
+            <span class="material-symbols-outlined">person</span>
+            <span>Perfil</span>
         </div>
     </nav>
 
