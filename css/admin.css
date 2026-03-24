@@ -1,175 +1,177 @@
 
 :root {
-    --primary: #960df2;
-    --primary-hover: #7b0bc7;
-    --bg-dark: #1b1022;
-    --bg-card: rgba(150, 13, 242, 0.05);
-    --border: rgba(150, 13, 242, 0.2);
-    --text: #f8fafc;
+    --bg-main: #0a0510;
+    --bg-card: #160d20;
+    --primary: #a855f7;
+    --primary-hover: #9333ea;
+    --text-main: #ffffff;
     --text-muted: #94a3b8;
+    --border: rgba(168, 85, 247, 0.2);
+    --danger: #ef4444;
 }
 
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--bg-dark);
-    color: var(--text);
-    margin: 0;
-    min-height: 100vh;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
-/* --- Sección de Login --- */
-#admin-login-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: radial-gradient(circle at center, #2d1b3d 0%, #1b1022 100%);
-}
+body 
+{ background-color: var(--bg-main); color: var(--text-main); }
 
-.login-container {
-    background: var(--bg-card);
-    padding: 2.5rem;
-    border-radius: 1.5rem;
-    border: 1px solid var(--border);
-    backdrop-filter: blur(10px);
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-}
+.btn-primary
+ { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3); }
 
-.login-container h2 {
-    text-align: center;
-    margin-bottom: 2rem;
-    font-weight: 800;
-    color: var(--primary);
-}
+.btn-primary:hover 
+{ background: var(--primary-hover); transform: translateY(-2px); }
 
-/* --- Panel de Administración (Dashboard) --- */
-header {
-    background: rgba(27, 16, 34, 0.8);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border);
-    padding: 1rem 5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+.btn-secondary 
+{ background: transparent; color: var(--text-main); border: 1px solid var(--text-muted); padding: 12px 20px; border-radius: 10px; cursor: pointer; }
 
-.admin-nav {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    padding: 1.5rem;
-    background: rgba(150, 13, 242, 0.03);
-}
+.btn-icon 
+{ background: rgba(255,255,255,0.05); color: var(--text-main); border: none; padding: 8px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
 
-/* --- Formularios y Entradas --- */
-form {
-    display: grid;
-    gap: 1rem;
-    background: var(--bg-card);
-    padding: 1.5rem;
-    border-radius: 1rem;
-    border: 1px solid var(--border);
-    margin-bottom: 2rem;
-}
+.btn-icon:hover 
+{ background: var(--primary); }
+
+.btn-icon.danger:hover 
+{ background: var(--danger); }
 
 input, select, textarea {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border);
-    padding: 0.8rem;
-    border-radius: 0.5rem;
-    color: white;
-    outline: none;
-    transition: all 0.3s ease;
+     background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); color: white; padding: 12px; border-radius: 10px; outline: none; 
+    }
+
+input:focus, select:focus, textarea:focus { 
+    border-color: var(--primary); box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
+ }
+
+#view-login { 
+    display: flex; justify-content: center; align-items: center; min-height: 100vh; background: radial-gradient(circle at center, #1a0b2e 0%, var(--bg-main) 100%);
+ }
+
+.login-container { 
+    background: var(--bg-card); padding: 40px; border-radius: 20px; border: 1px solid var(--border); width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 }
 
-input:focus, select:focus, textarea:focus {
-    border-color: var(--primary);
-    background: rgba(150, 13, 242, 0.1);
+.logo-center { 
+    background: rgba(168, 85, 247, 0.1); width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 15px; color: var(--primary);
+ }
+
+.login-container h2 {
+     font-size: 1.5rem; margin-bottom: 5px; 
+    }
+
+.subtitle {
+     color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px; 
+    }
+
+.input-group {
+     display: flex; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 15px; padding-left: 15px; 
+    }
+
+.input-group span { 
+    color: var(--text-muted);
+ }
+.input-group input {
+     border: none; background: transparent; width: 100%; box-shadow: none; 
+    }
+
+.w-full {
+     width: 100%; 
+    }
+
+
+#view-dashboard { 
+    display: flex; flex-direction: column; min-height: 100vh; }
+    
+.admin-nav { 
+    background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; 
 }
 
-/* --- Botones --- */
-.btn {
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 0.8rem 1.5rem;
-    border-radius: 0.6rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
+.nav-brand { 
+    display: flex; align-items: center; gap: 10px; 
 }
 
-.btn:hover {
-    background: var(--primary-hover);
-    transform: translateY(-2px);
+.nav-links { 
+    display: flex; gap: 10px; 
 }
 
-/* --- Tablas de Datos --- */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-    background: var(--bg-card);
-    border-radius: 1rem;
-    overflow: hidden;
+.nav-btn {
+     background: transparent; border: none; color: var(--text-muted); font-weight: 600; padding: 10px 15px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: 0.3s;
+     }
+
+.nav-btn.active, .nav-btn:hover { 
+    background: rgba(168, 85, 247, 0.1); color: var(--primary); 
+}
+.btn-logout { 
+    background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 8px 15px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 5px; 
 }
 
-th, td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
+.dashboard-content {
+     padding: 30px 5%; max-width: 1200px; margin: 0 auto; width: 100%; 
+    }
+
+.header-action { 
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; 
 }
 
-th {
-    background: rgba(150, 13, 242, 0.1);
-    color: var(--primary);
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    letter-spacing: 0.05em;
+.form-card { 
+    background: var(--bg-card); border: 1px solid var(--border); padding: 20px; border-radius: 15px; margin-bottom: 20px; animation: slideDown 0.3s ease-out; 
 }
 
-tr:hover {
-    background: rgba(255, 255, 255, 0.02);
+.form-grid { 
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; 
 }
 
-/* --- Secciones de Gestión --- */
-.admin-section {
-    max-width: 1000px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+.form-actions { 
+    display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;
+ }
+
+
+.list-container { 
+    display: flex; flex-direction: column; gap: 15px;
+ }
+
+.list-item {
+     background: var(--bg-card); border: 1px solid rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s;
+     }
+
+.list-item:hover {
+     border-color: var(--primary); 
+    }
+
+.item-info h4 {
+     color: var(--primary); margin-bottom: 5px; 
+    }
+
+.item-info p {
+     color: var(--text-muted); font-size: 0.85rem; 
+    }
+
+.item-actions { 
+    display: flex; gap: 10px; 
 }
 
-.admin-section h2 {
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
-    border-left: 4px solid var(--primary);
-    padding-left: 1rem;
+/* Tablas (Ventas) */
+.table-responsive { 
+    overflow-x: auto; background: var(--bg-card); border-radius: 15px; border: 1px solid var(--border); padding: 10px; 
 }
 
-/* --- Listas (Categorías/Eventos) --- */
-ul {
-    list-style: none;
-    padding: 0;
+.admin-table { 
+    width: 100%; border-collapse: collapse; text-align: left; 
+}
+.admin-table th, .admin-table td { 
+    padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);
+ }
+
+.admin-table th { 
+    color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; 
 }
 
-li {
-    background: var(--bg-card);
-    margin-bottom: 0.5rem;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid transparent;
-}
+.admin-table tr:last-child td { 
+    border-bottom: none;
+ }
 
-li:hover {
-    border-color: var(--border);
-}
+.admin-table tbody tr:hover { 
+    background: rgba(255,255,255,0.02);
+ }
 
-/* --- Ajuste para Inputs de Fecha y Hora --- */
-input[type="date"], input[type="time"] {
-    color-scheme: dark; /* Hace que el icono del calendario sea blanco */
+@keyframes slideDown { 
+    from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } 
 }
