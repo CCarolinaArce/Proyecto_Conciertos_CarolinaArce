@@ -237,7 +237,7 @@ const app = {
         this.updateCartBadge();
         
         alert(`¡Compra realizada con éxito!\nTu código de boleta es: ${sale.id}\nTe esperamos en el evento.`);
-        this.navigate('profile'); // Enviar directo al perfil tras comprar
+        this.navigate('profile');
     },
 
     // 8. Renderizar Perfil y Tickets
