@@ -26,9 +26,9 @@ const adminApp = {
         if (email === credentials.email && pass === credentials.password) {
             sessionStorage.setItem('adminLogged', 'true');
             this.showDashboard();
-            alert("¡Bienvenido al Panel de Administración!");
+            customAlert("¡Bienvenido al Panel de Administración!");
         } else {
-            alert("Credenciales incorrectas. Intenta de nuevo.");
+            customAlert("Credenciales incorrectas. Intenta de nuevo.", "Error de autenticación");
         }
     },
 
@@ -158,12 +158,12 @@ const adminApp = {
             // Actualizar
             const index = cats.findIndex(c => c.id == idInput);
             cats[index] = { id: Number(idInput), name, desc };
-            alert("Categoría actualizada.");
+            customAlert("Categoría actualizada.");
         } else {
             // Crear
             const newId = cats.length > 0 ? Math.max(...cats.map(c => c.id)) + 1 : 1;
             cats.push({ id: newId, name, desc });
-            alert("Categoría creada exitosamente.");
+            customAlert("Categoría creada exitosamente.");
         }
 
         saveData('categories', cats);
@@ -182,13 +182,13 @@ const adminApp = {
         window.scrollTo(0,0);
     },
 
-    deleteCategory: function(id) {
-        if(confirm("¿Estás seguro de eliminar esta categoría?")) {
+    deleteCategory: async function(id) {
+        if(await customConfirm("¿Estás seguro de eliminar esta categoría?")) {
             let cats = getData('categories');
             cats = cats.filter(c => c.id != id);
             saveData('categories', cats);
             this.renderCategories();
-            alert("Categoría eliminada.");
+            customAlert("Categoría eliminada.");
         }
     },
 
@@ -240,15 +240,15 @@ const adminApp = {
         if (action === 'create') {
             // Validar que el ID no exista
             if(events.find(ev => ev.id === eventData.id)) {
-                alert("Error: Ya existe un evento con ese código.");
+                customAlert("Ya existe un evento con ese código.", "Error");
                 return;
             }
             events.push(eventData);
-            alert("Evento creado exitosamente.");
+            customAlert("Evento creado exitosamente.");
         } else {
             const index = events.findIndex(ev => ev.id === eventData.id);
             events[index] = eventData;
-            alert("Evento actualizado.");
+            customAlert("Evento actualizado.");
         }
 
         saveData('events', events);
@@ -277,13 +277,13 @@ const adminApp = {
         window.scrollTo(0,0);
     },
 
-    deleteEvent: function(id) {
-        if(confirm(`¿Estás seguro de eliminar el evento ${id}?`)) {
+    deleteEvent: async function(id) {
+        if(await customConfirm(`¿Estás seguro de eliminar el evento ${id}?`)) {
             let events = getData('events');
             events = events.filter(e => e.id !== id);
             saveData('events', events);
             this.renderEvents();
-            alert("Evento eliminado.");
+            customAlert("Evento eliminado.");
         }
     },
 
@@ -321,8 +321,7 @@ const adminApp = {
             <li>${item.qty}x ${item.name} ($${Number(item.price * item.qty).toLocaleString('es-CO')})</li>
         `).join('');
 
-        alert(`Detalles de la Compra: ${sale.id}\n
-Fecha: ${sale.date}
+        customAlert(`Fecha: ${sale.date}
 Cliente: ${sale.buyer.name} (ID: ${sale.buyer.id})
 Email: ${sale.buyer.email}
 Teléfono: ${sale.buyer.phone}
@@ -331,7 +330,7 @@ Dirección: ${sale.buyer.address}
 Eventos comprados:
 ${sale.items.map(i => `- ${i.qty}x ${i.name}`).join('\n')}
 
-TOTAL: $${Number(sale.total).toLocaleString('es-CO')}`);
+TOTAL: $${Number(sale.total).toLocaleString('es-CO')}`, `Detalles de la Compra: ${sale.id}`);
     }
 };
 

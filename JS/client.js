@@ -146,7 +146,7 @@ const app = {
         
         saveData('cart', cart);
         this.updateCartBadge();
-        alert(`¡Añadiste una entrada para "${event.name}" al carrito!`);
+        customAlert(`¡Añadiste una entrada para "${event.name}" al carrito!`, "Carrito Actualizado");
     },
 
     renderCart: function() {
@@ -236,7 +236,7 @@ const app = {
         document.getElementById('form-checkout').reset();
         this.updateCartBadge();
         
-        alert(`¡Compra realizada con éxito!\nTu código de boleta es: ${sale.id}\nTe esperamos en el evento.`);
+        customAlert(`¡Compra realizada con éxito!\nTu código de boleta es: ${sale.id}\nTe esperamos en el evento.`, "¡Gracias por tu compra!");
         this.navigate('profile');
     },
 

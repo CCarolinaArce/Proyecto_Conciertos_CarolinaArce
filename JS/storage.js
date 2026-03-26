@@ -36,3 +36,38 @@ function saveData(key, data) {
 
 // Inicializar al cargar
 initDB();
+
+// --- ALERTAS PERSONALIZADAS ---
+window.customAlert = function(message, title = 'Notificación') {
+    const overlay = document.createElement('div');
+    overlay.className = 'custom-modal-overlay';
+    overlay.innerHTML = `
+        <div class="custom-modal">
+            <h3 style="color: var(--primary); margin-bottom: 15px;">${title}</h3>
+            <p style="color: var(--text-main); white-space: pre-wrap; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5;">${message}</p>
+            <button class="btn-primary" onclick="this.closest('.custom-modal-overlay').remove()">Aceptar</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+};
+
+window.customConfirm = function(message, title = 'Confirmar') {
+    return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.className = 'custom-modal-overlay';
+        overlay.innerHTML = `
+            <div class="custom-modal">
+                <h3 style="color: var(--primary); margin-bottom: 15px;">${title}</h3>
+                <p style="color: var(--text-main); white-space: pre-wrap; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5;">${message}</p>
+                <div style="display: flex; gap: 15px; justify-content: center;">
+                    <button class="btn-secondary cancel-btn">Cancelar</button>
+                    <button class="btn-primary confirm-btn">Aceptar</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        overlay.querySelector('.cancel-btn').addEventListener('click', () => { overlay.remove(); resolve(false); });
+        overlay.querySelector('.confirm-btn').addEventListener('click', () => { overlay.remove(); resolve(true); });
+    });
+};
