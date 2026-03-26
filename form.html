@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edición de Inmueble - Acme</title>
+    <link rel="stylesheet" href="/stylesheet.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="logo">
+            <img src="https://via.placeholder.com/100x40?text=acme" alt="Logo Acme">
+        </div>
+        <h1>GESTIÓN DE INMUEBLES</h1>
+        <div class="user-profile">
+            <div class="user-info">
+                <span>John Doe</span>
+                <a href="#">Cerrar Sesión</a>
+            </div>
+            <div class="user-avatar"></div>
+        </div>
+    </header>
+
+    <nav class="tabs">
+        <a href="#" class="active">Inmuebles</a>
+        <a href="#">Usuarios</a>
+    </nav>
+
+    <main class="container">
+        <section class="form-card">
+            <header class="form-header">
+                <h2>Edición de Inmueble</h2>
+                <button class="btn-close">×</button>
+            </header>
+
+            <div class="form-body">
+                <div class="form-image">
+                    <img src="https://via.placeholder.com/400x400" alt="Casa en edición">
+                </div>
+
+                <form class="form-fields">
+                    <div class="input-group">
+                        <label>Dirección</label>
+                        <input type="text">
+                    </div>
+                    <div class="input-group">
+                        <label>Tipo</label>
+                        <select>
+                            <option value="">Seleccione...</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Ciudad</label>
+                        <input type="text">
+                    </div>
+                    <div class="input-group">
+                        <label>Departamento</label>
+                        <input type="text">
+                    </div>
+                    <div class="input-group">
+                        <label>Matrícula Inmobiliaria</label>
+                        <input type="text">
+                    </div>
+                    <div class="input-group">
+                        <label>Área (m2)</label>
+                        <input type="text">
+                    </div>
+                    <div class="input-group">
+                        <label>Propietario</label>
+                        <input type="text">
+                    </div>
+                    <div class="input-group">
+                        <label>Identificación propietario</label>
+                        <input type="text">
+                    </div>
+                    <div class="input-group full-width">
+                        <label>Valor del inmueble</label>
+                        <input type="text">
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="comercial">
+                        <label for="comercial">Uso comercial</label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-save">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>
