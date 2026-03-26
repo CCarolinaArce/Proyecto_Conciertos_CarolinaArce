@@ -12,6 +12,7 @@ const adminApp = {
         
         // Listeners de los formularios CRUD
         document.getElementById('form-category').addEventListener('submit', (e) => this.saveCategory(e));
+        document.getElementById('form-city').addEventListener('submit', (e) => this.saveCity(e));
         document.getElementById('form-event').addEventListener('submit', (e) => this.saveEvent(e));
     },
 
@@ -57,9 +58,11 @@ const adminApp = {
 
         // Renderizar datos correspondientes
         if (subView === 'overview') this.renderOverview(); // <-- NUEVO
+        if (subView === 'cities') this.renderCities();
         if (subView === 'categories') this.renderCategories();
         if (subView === 'events') {
             this.updateCategorySelect();
+            this.updateCitySelect();
             this.renderEvents();
         }
         if (subView === 'sales') this.renderSales();
@@ -115,11 +118,15 @@ const adminApp = {
         const form = document.getElementById(formId);
         form.style.display = form.style.display === 'none' ? 'block' : 'none';
         
-        // Limpiar formularios al abrir/cerrar
         if(formId === 'category-form-container') {
             document.getElementById('form-category').reset();
             document.getElementById('cat-id').value = '';
             document.getElementById('cat-form-title').innerText = 'Agregar Categoría';
+        } else if (formId === 'city-form-container') {
+            document.getElementById('form-city').reset();
+            document.getElementById('city-id-original').value = '';
+            document.getElementById('city-form-title').innerText = 'Agregar Ciudad';
+            document.getElementById('city-code').readOnly = false;
         } else {
             document.getElementById('form-event').reset();
             document.getElementById('ev-action').value = 'create';
@@ -192,12 +199,89 @@ const adminApp = {
         }
     },
 
+    // --- MÓDULO: CIUDADES ---
+    renderCities: function() {
+        const cities = getData('cities');
+        const container = document.getElementById('admin-cities-list');
+        container.innerHTML = cities.map(city => `
+            <div class="list-item">
+                <div class="item-info">
+                    <h4>${city.name}</h4>
+                    <p>Código: ${city.code}</p>
+                </div>
+                <div class="item-actions">
+                    <button class="btn-icon" onclick="adminApp.editCity('${city.code}')"><span class="material-symbols-outlined">edit</span></button>
+                    <button class="btn-icon danger" onclick="adminApp.deleteCity('${city.code}')"><span class="material-symbols-outlined">delete</span></button>
+                </div>
+            </div>
+        `).join('');
+    },
+
+    saveCity: function(e) {
+        e.preventDefault();
+        const originalCode = document.getElementById('city-id-original').value;
+        const code = document.getElementById('city-code').value.toUpperCase();
+        const name = document.getElementById('city-name').value;
+        
+        let cities = getData('cities');
+
+        if (originalCode) {
+            // Actualizar
+            const index = cities.findIndex(c => c.code === originalCode);
+            if (index !== -1) {
+                cities[index].name = name;
+                customAlert("Ciudad actualizada.");
+            }
+        } else {
+            // Crear
+            if (cities.find(c => c.code === code)) {
+                customAlert("El código de la ciudad ya existe.", "Error");
+                return;
+            }
+            cities.push({ code, name });
+            customAlert("Ciudad creada exitosamente.");
+        }
+
+        saveData('cities', cities);
+        this.toggleForm('city-form-container');
+        this.renderCities();
+    },
+
+    editCity: function(code) {
+        const city = getData('cities').find(c => c.code === code);
+        if(!city) return;
+        document.getElementById('city-id-original').value = city.code;
+        document.getElementById('city-code').value = city.code;
+        document.getElementById('city-code').readOnly = true;
+        document.getElementById('city-name').value = city.name;
+        document.getElementById('city-form-title').innerText = 'Editar Ciudad';
+        document.getElementById('city-form-container').style.display = 'block';
+        window.scrollTo(0,0);
+    },
+
+    deleteCity: async function(code) {
+        if(await customConfirm("¿Estás seguro de eliminar esta ciudad?")) {
+            let cities = getData('cities');
+            cities = cities.filter(c => c.code !== code);
+            saveData('cities', cities);
+            this.renderCities();
+            customAlert("Ciudad eliminada.");
+        }
+    },
+
     // --- MÓDULO: EVENTOS ---
     updateCategorySelect: function() {
         const cats = getData('categories');
         const select = document.getElementById('ev-category');
         select.innerHTML = '<option value="">Seleccionar Categoría</option>' + 
             cats.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+    },
+
+    updateCitySelect: function() {
+        const cities = getData('cities');
+        const select = document.getElementById('ev-city');
+        select.innerHTML = '<option value="">Seleccionar Ciudad</option>' + 
+            cities.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
     },
 
     renderEvents: function() {

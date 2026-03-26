@@ -65,10 +65,18 @@ const app = {
     // 4. Filtros
     loadFilters: function() {
         const categories = getData('categories');
+        const cities = getData('cities');
         const catSelect = document.getElementById('filter-category');
+        const citySelect = document.getElementById('filter-city');
         
         categories.forEach(cat => {
             catSelect.innerHTML += `<option value="${cat.name}">${cat.name}</option>`;
+        });
+
+ 
+        citySelect.innerHTML = '<option value="">Todas las ciudades</option>';
+        cities.forEach(city => {
+            citySelect.innerHTML += `<option value="${city.name}">${city.name}</option>`;
         });
 
         document.getElementById('search-input').addEventListener('input', () => this.applyFilters());
