@@ -1,11 +1,11 @@
-/* Configuración General */
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     background-color: #ffffff;
 }
 
-/* Header */
+
 .main-header {
     background-color: #000;
     color: white;
@@ -19,6 +19,12 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.user-profile:hover {
+    opacity: 0.8;
 }
 
 .user-info {
@@ -38,30 +44,30 @@ body {
     border-radius: 50%;
 }
 
-/* Tabs */
+
 .tabs {
-    background-color: #a0a0a0;
+    background-color: #e6e6fa; 
     padding: 5px 20px;
 }
 
 .tabs a {
     text-decoration: none;
-    color: white;
+    color: #333;
     padding: 5px 15px;
     display: inline-block;
 }
 
 .tabs a.active {
-    background-color: #ffffff;
-    color: #333;
+    background-color: #967bb6; 
+    color: white;
 }
 
-/* Contenedor Principal */
+
 .container {
     padding: 20px 50px;
 }
 
-/* Barra de herramientas */
+
 .toolbar {
     display: flex;
     justify-content: space-between;
@@ -81,7 +87,7 @@ body {
 }
 
 .btn-new {
-    background-color: #000;
+    background-color: #967bb6;
     color: white;
     padding: 8px 25px;
     border: none;
@@ -89,7 +95,11 @@ body {
     border-radius: 4px;
 }
 
-/* Lista de Propiedades */
+.btn-new:hover {
+    background-color: #000;
+}
+
+
 .property-list {
     border-top: 1px solid #eee;
 }
@@ -119,7 +129,7 @@ body {
     text-decoration: none;
 }
 
-/* Paginación */
+
 .pagination {
     display: flex;
     justify-content: center;
@@ -134,7 +144,7 @@ body {
 }
 
 .page-num.active {
-    background-color: #f0f0f0;
+    background-color: #e6e6fa;
     padding: 5px 10px;
     border-radius: 50%;
     font-weight: bold;
@@ -147,7 +157,7 @@ body {
     cursor: pointer;
 }
 
-/* Contenedor del Formulario (Card) */
+
 .form-card {
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -171,7 +181,7 @@ body {
 }
 
 .btn-close {
-    background: #000;
+    background: #967bb6;
     color: white;
     border: none;
     border-radius: 50%;
@@ -181,7 +191,11 @@ body {
     font-weight: bold;
 }
 
-/* Cuerpo del Formulario */
+.btn-close:hover {
+    background: #000;
+}
+
+
 .form-body {
     display: flex;
     gap: 30px;
@@ -198,11 +212,11 @@ body {
     border-radius: 4px;
 }
 
-/* Grid de los inputs */
+
 .form-fields {
     flex: 2;
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
+    grid-template-columns: 1fr 1fr; 
     gap: 15px;
 }
 
@@ -225,10 +239,10 @@ body {
 }
 
 .full-width {
-    grid-column: span 1; /* Se mantiene en su columna */
+    grid-column: span 1; 
 }
 
-/* Checkbox alignment */
+
 .checkbox-group {
     display: flex;
     align-items: center;
@@ -238,7 +252,7 @@ body {
     color: #666;
 }
 
-/* Botón Guardar */
+
 .form-actions {
     grid-column: span 2;
     display: flex;
@@ -247,7 +261,7 @@ body {
 }
 
 .btn-save {
-    background-color: #000;
+    background-color: #967bb6;
     color: white;
     padding: 10px 40px;
     border: none;
@@ -257,7 +271,7 @@ body {
 }
 
 .btn-save:hover {
-    background-color: #333;
+    background-color: #000;
 }
 
 
@@ -267,28 +281,24 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.6); /* Fondo oscurecido */
+    background: rgba(0,0,0,0.6); 
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
 }
 
-/* Ajuste para que el componente se vea como una fila */
 propiedad-item {
     display: block;
     width: 100%;
 }
 
 .property-item {
-    /* Mantener el grid que ya definimos */
+ 
     border-bottom: 1px solid #eee;
     padding: 15px 0;
 }
 
-/* ... (Se mantiene todo tu CSS previo) ... */
-
-/* Ajuste para botones dentro de Web Components */
 .btn-action {
     background: none;
     border: none;
@@ -300,7 +310,7 @@ propiedad-item {
 }
 
 .btn-action:hover {
-    color: #000;
+    color: #967bb6;
 }
 
 inmueble-item {
@@ -308,7 +318,7 @@ inmueble-item {
     width: 100%;
 }
 
-/* Asegurar que el modal ocupe toda la pantalla */
+
 .modal-overlay {
     position: fixed;
     top: 0; left: 0;
@@ -319,7 +329,7 @@ inmueble-item {
     justify-content: center;
     align-items: center;
 }
-/* Mini modal para confirmación */
+
 .confirm-mini {
     max-width: 400px;
     text-align: center;
@@ -353,11 +363,11 @@ inmueble-item {
 
 .search-box input:focus {
     outline: none;
-    border-color: #000;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    border-color: #967bb6;
+    box-shadow: 0 0 5px rgba(150, 123, 182, 0.4);
 }
 
-/* Configuración Base */
+
 body { font-family: Arial, sans-serif; margin: 0; background-color: #ffffff; }
 
 .main-header {
@@ -366,22 +376,23 @@ body { font-family: Arial, sans-serif; margin: 0; background-color: #ffffff; }
     padding: 10px 20px;
 }
 
-.tabs { background-color: #a0a0a0; padding: 5px 20px; }
-.tabs a { text-decoration: none; color: white; padding: 5px 15px; display: inline-block; }
-.tabs a.active { background-color: #ffffff; color: #333; }
+.tabs { background-color: #e6e6fa; padding: 5px 20px; }
+.tabs a { text-decoration: none; color: #333; padding: 5px 15px; display: inline-block; }
+.tabs a.active { background-color: #967bb6; color: white; }
 
 .container { padding: 20px 50px; }
 .toolbar { display: flex; justify-content: space-between; margin-bottom: 20px; }
 
-/* Buscador */
+
 .search-box input { padding: 8px; width: 300px; border: 1px solid #ccc; border-radius: 4px; }
 
 .btn-new, .btn-save, .btn-si {
-    background-color: #000; color: white; padding: 10px 25px;
+    background-color: #967bb6; color: white; padding: 10px 25px;
     border: none; cursor: pointer; border-radius: 4px;
 }
+.btn-new:hover, .btn-save:hover, .btn-si:hover { background-color: #000; }
 
-/* Modales */
+
 .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: rgba(0,0,0,0.7); z-index: 2000;
@@ -402,7 +413,7 @@ body { font-family: Arial, sans-serif; margin: 0; background-color: #ffffff; }
 .input-group label { font-size: 11px; color: #888; }
 .input-group input, .input-group select { padding: 6px; border: 1px solid #ccc; }
 
-/* Tabla/Lista */
+
 .property-item {
     display: grid; grid-template-columns: 120px 1fr 1fr 1fr 150px;
     align-items: center; padding: 10px 0; border-bottom: 1px solid #eee;
@@ -412,7 +423,8 @@ body { font-family: Arial, sans-serif; margin: 0; background-color: #ffffff; }
     background: none; border: none; color: #666; 
     text-decoration: underline; cursor: pointer; margin-right: 10px; 
 }
+.btn-action:hover { color: #967bb6; }
 
-/* Modal Detalle Específico */
+
 .detail-grid { display: flex; }
 .btn-close-text { background: none; border: none; text-decoration: underline; cursor: pointer; }

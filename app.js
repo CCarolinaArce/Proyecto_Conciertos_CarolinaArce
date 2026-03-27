@@ -1,4 +1,4 @@
-// --- 1. COMPONENTE: MODAL DE CONFIRMACIÓN (Eliminar) ---
+
 class ModalConfirmacion extends HTMLElement {
     constructor() {
         super();
@@ -33,7 +33,6 @@ class ModalConfirmacion extends HTMLElement {
 }
 customElements.define('modal-confirmacion', ModalConfirmacion);
 
-// --- 2. COMPONENTE: MODAL DE DETALLE (Ver) ---
 class ModalDetalle extends HTMLElement {
     connectedCallback() { this.render(); }
     render() {
@@ -70,7 +69,6 @@ class ModalDetalle extends HTMLElement {
 }
 customElements.define('modal-detalle', ModalDetalle);
 
-// --- 3. COMPONENTE: ITEM DE INMUEBLE ---
 class InmuebleItem extends HTMLElement {
     connectedCallback() { this.render(); }
     render() {
@@ -103,7 +101,7 @@ class InmuebleItem extends HTMLElement {
 }
 customElements.define('inmueble-item', InmuebleItem);
 
-// --- 4. COMPONENTE: MODAL FORMULARIO ---
+
 class ModalFormulario extends HTMLElement {
     connectedCallback() {
         this.render();
@@ -150,14 +148,74 @@ class ModalFormulario extends HTMLElement {
 }
 customElements.define('modal-formulario', ModalFormulario);
 
-// --- 5. LÓGICA DE INICIALIZACIÓN Y STORAGE ---
+class ModalPerfil extends HTMLElement {
+    connectedCallback() {
+        this.render();
+    }
+    render() {
+        this.innerHTML = `
+        <div class="modal-overlay" style="display: none;">
+            <div class="form-card" style="max-width: 500px; width: 100%;">
+                <header class="form-header">
+                    <h2>Mi Perfil</h2>
+                    <button class="btn-close">×</button>
+                </header>
+                <div class="form-body" style="flex-direction: column; gap: 20px;">
+                    <div style="display: flex; align-items: center; gap: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px;">
+                        <img src="https://via.placeholder.com/80" alt="Foto de perfil" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                        <div>
+                            <h3 style="margin: 0 0 5px 0;">John Doe</h3>
+                            <p style="margin: 0; color: #666; font-size: 14px;">johndoe@example.com</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0 0 10px 0; font-size: 1.1rem;">Mis Inmuebles</h3>
+                        <div id="misInmueblesList" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        this.querySelector('.btn-close').onclick = () => this.cerrar();
+    }
+    abrir() {
+        this.cargarMisInmuebles();
+        this.querySelector('.modal-overlay').style.display = 'flex';
+    }
+    cerrar() {
+        this.querySelector('.modal-overlay').style.display = 'none';
+    }
+    cargarMisInmuebles() {
+        const lista = this.querySelector('#misInmueblesList');
+        const guardados = JSON.parse(localStorage.getItem('inmuebles_acme')) || [];
+        lista.innerHTML = '';
+        if (guardados.length === 0) {
+            lista.innerHTML = '<p style="color: #888; font-size: 14px;">No tienes inmuebles agregados.</p>';
+            return;
+        }
+        guardados.forEach(d => {
+            lista.innerHTML += `
+                <div style="display: flex; gap: 10px; align-items: center; padding: 10px; border: 1px solid #f0f0f0; border-radius: 4px;">
+                    <img src="${d.imagen}" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
+                    <div style="flex: 1;">
+                        <p style="margin: 0; font-weight: bold; font-size: 13px;">${d.tipo} - ${d.direccion}</p>
+                        <p style="margin: 0; font-size: 12px; color: #967bb6;">$${d.precio}</p>
+                    </div>
+                </div>`;
+        });
+    }
+}
+customElements.define('modal-perfil', ModalPerfil);
+
 document.addEventListener('DOMContentLoaded', () => {
     const btnNuevo = document.querySelector('.btn-new');
+    const btnPerfil = document.querySelector('#btnPerfil');
     const modalForm = document.querySelector('modal-formulario');
+    const modalPerfil = document.querySelector('modal-perfil');
     const lista = document.querySelector('.property-list');
     const inputBusqueda = document.querySelector('.search-box input');
 
-    // Cargar datos iniciales de localStorage
+
     const cargarDatos = () => {
         const guardados = JSON.parse(localStorage.getItem('inmuebles_acme')) || [];
         lista.innerHTML = '';
@@ -177,8 +235,9 @@ document.addEventListener('DOMContentLoaded', () => {
         lista.appendChild(item);
     };
 
-    // Eventos
+
     btnNuevo.onclick = () => modalForm.abrir();
+    if(btnPerfil) btnPerfil.onclick = () => modalPerfil.abrir();
 
     document.addEventListener('nuevo-inmueble', (e) => {
         crearElementoInmueble(e.detail);
@@ -189,7 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
         guardarDatos();
     });
 
-    // Buscador
     inputBusqueda.addEventListener('input', (e) => {
         const termino = e.target.value.toLowerCase();
         const items = lista.querySelectorAll('inmueble-item');
@@ -197,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = JSON.parse(item.getAttribute('data-full'));
             const coincide = data.tipo.toLowerCase().includes(termino) || 
                              data.direccion.toLowerCase().includes(termino) || 
-                             data.precio.toString().includes(termino);
+                             (data.precio || '').toString().includes(termino);
             item.style.display = coincide ? 'block' : 'none';
         });
     });
