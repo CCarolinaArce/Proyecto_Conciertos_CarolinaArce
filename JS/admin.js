@@ -218,7 +218,7 @@ const adminApp = {
             </div>
         `).join('');
     },
-
+    // * Función para agregar y guardar ciudades.
     saveCity: function(e) {
         e.preventDefault();
         const originalCode = document.getElementById('city-id-original').value;

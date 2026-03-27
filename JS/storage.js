@@ -37,6 +37,7 @@ function initDB() {
 
 function getData(key) {
     return JSON.parse(localStorage.getItem(key)) || [];
+    //*Parsea la data de texto plano string a obejto o 1 arreglo.
 }
 
 function saveData(key, data) {
