@@ -12,6 +12,7 @@ const adminApp = {
         
         // Listeners de los formularios CRUD
         document.getElementById('form-category').addEventListener('submit', (e) => this.saveCategory(e));
+        document.getElementById('form-city').addEventListener('submit', (e) => this.saveCity(e));
         document.getElementById('form-event').addEventListener('submit', (e) => this.saveEvent(e));
     },
 
@@ -26,9 +27,9 @@ const adminApp = {
         if (email === credentials.email && pass === credentials.password) {
             sessionStorage.setItem('adminLogged', 'true');
             this.showDashboard();
-            alert("¡Bienvenido al Panel de Administración!");
+            customAlert("¡Bienvenido al Panel de Administración!");
         } else {
-            alert("Credenciales incorrectas. Intenta de nuevo.");
+            customAlert("Credenciales incorrectas. Intenta de nuevo.", "Error de autenticación");
         }
     },
 
@@ -57,9 +58,11 @@ const adminApp = {
 
         // Renderizar datos correspondientes
         if (subView === 'overview') this.renderOverview(); // <-- NUEVO
+        if (subView === 'cities') this.renderCities();
         if (subView === 'categories') this.renderCategories();
         if (subView === 'events') {
             this.updateCategorySelect();
+            this.updateCitySelect();
             this.renderEvents();
         }
         if (subView === 'sales') this.renderSales();
@@ -117,11 +120,15 @@ const adminApp = {
         const form = document.getElementById(formId);
         form.style.display = form.style.display === 'none' ? 'block' : 'none';
         
-        // Limpiar formularios al abrir/cerrar
         if(formId === 'category-form-container') {
             document.getElementById('form-category').reset();
             document.getElementById('cat-id').value = '';
             document.getElementById('cat-form-title').innerText = 'Agregar Categoría';
+        } else if (formId === 'city-form-container') {
+            document.getElementById('form-city').reset();
+            document.getElementById('city-id-original').value = '';
+            document.getElementById('city-form-title').innerText = 'Agregar Ciudad';
+            document.getElementById('city-code').readOnly = false;
         } else {
             document.getElementById('form-event').reset();
             document.getElementById('ev-action').value = 'create';
@@ -160,12 +167,12 @@ const adminApp = {
             // Actualizar
             const index = cats.findIndex(c => c.id == idInput);
             cats[index] = { id: Number(idInput), name, desc };
-            alert("Categoría actualizada.");
+            customAlert("Categoría actualizada.");
         } else {
             // Crear
             const newId = cats.length > 0 ? Math.max(...cats.map(c => c.id)) + 1 : 1;
             cats.push({ id: newId, name, desc });
-            alert("Categoría creada exitosamente.");
+            customAlert("Categoría creada exitosamente.");
         }
 
         saveData('categories', cats);
@@ -184,13 +191,83 @@ const adminApp = {
         window.scrollTo(0,0);
     },
 
-    deleteCategory: function(id) {
-        if(confirm("¿Estás seguro de eliminar esta categoría?")) {
+    deleteCategory: async function(id) {
+        if(await customConfirm("¿Estás seguro de eliminar esta categoría?")) {
             let cats = getData('categories');
             cats = cats.filter(c => c.id != id);
             saveData('categories', cats);
             this.renderCategories();
-            alert("Categoría eliminada.");
+            customAlert("Categoría eliminada.");
+        }
+    },
+
+    // --- MÓDULO: CIUDADES ---
+    renderCities: function() {
+        const cities = getData('cities');
+        const container = document.getElementById('admin-cities-list');
+        container.innerHTML = cities.map(city => `
+            <div class="list-item">
+                <div class="item-info">
+                    <h4>${city.name}</h4>
+                    <p>Código: ${city.code}</p>
+                </div>
+                <div class="item-actions">
+                    <button class="btn-icon" onclick="adminApp.editCity('${city.code}')"><span class="material-symbols-outlined">edit</span></button>
+                    <button class="btn-icon danger" onclick="adminApp.deleteCity('${city.code}')"><span class="material-symbols-outlined">delete</span></button>
+                </div>
+            </div>
+        `).join('');
+    },
+
+    saveCity: function(e) {
+        e.preventDefault();
+        const originalCode = document.getElementById('city-id-original').value;
+        const code = document.getElementById('city-code').value.toUpperCase();
+        const name = document.getElementById('city-name').value;
+        
+        let cities = getData('cities');
+
+        if (originalCode) {
+            // Actualizar
+            const index = cities.findIndex(c => c.code === originalCode);
+            if (index !== -1) {
+                cities[index].name = name;
+                customAlert("Ciudad actualizada.");
+            }
+        } else {
+            // Crear
+            if (cities.find(c => c.code === code)) {
+                customAlert("El código de la ciudad ya existe.", "Error");
+                return;
+            }
+            cities.push({ code, name });
+            customAlert("Ciudad creada exitosamente.");
+        }
+
+        saveData('cities', cities);
+        this.toggleForm('city-form-container');
+        this.renderCities();
+    },
+
+    editCity: function(code) {
+        const city = getData('cities').find(c => c.code === code);
+        if(!city) return;
+        document.getElementById('city-id-original').value = city.code;
+        document.getElementById('city-code').value = city.code;
+        document.getElementById('city-code').readOnly = true;
+        document.getElementById('city-name').value = city.name;
+        document.getElementById('city-form-title').innerText = 'Editar Ciudad';
+        document.getElementById('city-form-container').style.display = 'block';
+        window.scrollTo(0,0);
+    },
+
+    deleteCity: async function(code) {
+        if(await customConfirm("¿Estás seguro de eliminar esta ciudad?")) {
+            let cities = getData('cities');
+            cities = cities.filter(c => c.code !== code);
+            saveData('cities', cities);
+            this.renderCities();
+            customAlert("Ciudad eliminada.");
         }
     },
 
@@ -200,6 +277,13 @@ const adminApp = {
         const select = document.getElementById('ev-category');
         select.innerHTML = '<option value="">Seleccionar Categoría</option>' + 
             cats.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+    },
+
+    updateCitySelect: function() {
+        const cities = getData('cities');
+        const select = document.getElementById('ev-city');
+        select.innerHTML = '<option value="">Seleccionar Ciudad</option>' + 
+            cities.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
     },
 
     renderEvents: function() {
@@ -242,15 +326,15 @@ const adminApp = {
         if (action === 'create') {
             // Validar que el ID no exista
             if(events.find(ev => ev.id === eventData.id)) {
-                alert("Error: Ya existe un evento con ese código.");
+                customAlert("Ya existe un evento con ese código.", "Error");
                 return;
             }
             events.push(eventData);
-            alert("Evento creado exitosamente.");
+            customAlert("Evento creado exitosamente.");
         } else {
             const index = events.findIndex(ev => ev.id === eventData.id);
             events[index] = eventData;
-            alert("Evento actualizado.");
+            customAlert("Evento actualizado.");
         }
 
         saveData('events', events);
@@ -279,13 +363,13 @@ const adminApp = {
         window.scrollTo(0,0);
     },
 
-    deleteEvent: function(id) {
-        if(confirm(`¿Estás seguro de eliminar el evento ${id}?`)) {
+    deleteEvent: async function(id) {
+        if(await customConfirm(`¿Estás seguro de eliminar el evento ${id}?`)) {
             let events = getData('events');
             events = events.filter(e => e.id !== id);
             saveData('events', events);
             this.renderEvents();
-            alert("Evento eliminado.");
+            customAlert("Evento eliminado.");
         }
     },
 
@@ -323,8 +407,7 @@ const adminApp = {
             <li>${item.qty}x ${item.name} ($${Number(item.price * item.qty).toLocaleString('es-CO')})</li>
         `).join('');
 
-        alert(`Detalles de la Compra: ${sale.id}\n
-Fecha: ${sale.date}
+        customAlert(`Fecha: ${sale.date}
 Cliente: ${sale.buyer.name} (ID: ${sale.buyer.id})
 Email: ${sale.buyer.email}
 Teléfono: ${sale.buyer.phone}
@@ -333,7 +416,7 @@ Dirección: ${sale.buyer.address}
 Eventos comprados:
 ${sale.items.map(i => `- ${i.qty}x ${i.name}`).join('\n')}
 
-TOTAL: $${Number(sale.total).toLocaleString('es-CO')}`);
+TOTAL: $${Number(sale.total).toLocaleString('es-CO')}`, `Detalles de la Compra: ${sale.id}`);
     }
 };
 

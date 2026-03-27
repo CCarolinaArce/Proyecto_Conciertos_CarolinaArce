@@ -65,10 +65,18 @@ const app = {
     // 4. Filtros
     loadFilters: function() {
         const categories = getData('categories');
+        const cities = getData('cities');
         const catSelect = document.getElementById('filter-category');
+        const citySelect = document.getElementById('filter-city');
         
         categories.forEach(cat => {
             catSelect.innerHTML += `<option value="${cat.name}">${cat.name}</option>`;
+        });
+
+ 
+        citySelect.innerHTML = '<option value="">Todas las ciudades</option>';
+        cities.forEach(city => {
+            citySelect.innerHTML += `<option value="${city.name}">${city.name}</option>`;
         });
 
         document.getElementById('search-input').addEventListener('input', () => this.applyFilters());
@@ -146,7 +154,7 @@ const app = {
         
         saveData('cart', cart);
         this.updateCartBadge();
-        alert(`¡Añadiste una entrada para "${event.name}" al carrito!`);
+        customAlert(`¡Añadiste una entrada para "${event.name}" al carrito!`, "Carrito Actualizado");
     },
 
     renderCart: function() {
@@ -228,7 +236,7 @@ const app = {
         document.getElementById('form-checkout').reset();
         this.updateCartBadge();
         
-        alert(`¡Compra realizada con éxito!\nTu código de boleta es: ${sale.id}\nTe esperamos en el evento.`);
+        customAlert(`¡Compra realizada con éxito!\nTu código de boleta es: ${sale.id}\nTe esperamos en el evento.`, "¡Gracias por tu compra!");
         this.navigate('profile');
     },
 

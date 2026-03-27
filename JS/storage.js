@@ -7,6 +7,14 @@ const DEFAULT_CATEGORIES = [
     { id: 4, name: "Vallenato", desc: "Lo mejor del folclor vallenato." }
 ];
 
+const DEFAULT_CITIES = [
+    { code: "BOG", name: "Bogotá" },
+    { code: "MED", name: "Medellín" },
+    { code: "CTG", name: "Cartagena" },
+    { code: "SMR", name: "Santa Marta" },
+    { code: "BAQ", name: "Barranquilla" },
+];
+
 const DEFAULT_EVENTS = [
     { id: "EVT-001", name: "Neon Nights Festival", category: "Electrónica", price: 180000, date: "2024-10-24", time: "20:00", city: "Bogotá", image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500&q=80", desc: "El mejor festival de luces y sonido." },
     { id: "EVT-002", name: "Rock Legends Tour", category: "Rock & Metal", price: 250000, date: "2024-11-12", time: "19:30", city: "Medellín", image: "https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=500&q=80", desc: "Leyendas del rock en un solo escenario." },
@@ -21,6 +29,7 @@ function initDB() {
         localStorage.setItem('adminCredentials', JSON.stringify({ email: 'admin@mail.com', password: '123456' }));
     }
     if (!localStorage.getItem('categories')) localStorage.setItem('categories', JSON.stringify(DEFAULT_CATEGORIES));
+    if (!localStorage.getItem('cities')) localStorage.setItem('cities', JSON.stringify(DEFAULT_CITIES));
     if (!localStorage.getItem('events')) localStorage.setItem('events', JSON.stringify(DEFAULT_EVENTS));
     if (!localStorage.getItem('sales')) localStorage.setItem('sales', JSON.stringify([]));
     if (!localStorage.getItem('cart')) localStorage.setItem('cart', JSON.stringify([]));
@@ -36,3 +45,38 @@ function saveData(key, data) {
 
 // Inicializar al cargar
 initDB();
+
+// --- ALERTAS PERSONALIZADAS ---
+window.customAlert = function(message, title = 'Notificación') {
+    const overlay = document.createElement('div');
+    overlay.className = 'custom-modal-overlay';
+    overlay.innerHTML = `
+        <div class="custom-modal">
+            <h3 style="color: var(--primary); margin-bottom: 15px;">${title}</h3>
+            <p style="color: var(--text-main); white-space: pre-wrap; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5;">${message}</p>
+            <button class="btn-primary" onclick="this.closest('.custom-modal-overlay').remove()">Aceptar</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+};
+
+window.customConfirm = function(message, title = 'Confirmar') {
+    return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.className = 'custom-modal-overlay';
+        overlay.innerHTML = `
+            <div class="custom-modal">
+                <h3 style="color: var(--primary); margin-bottom: 15px;">${title}</h3>
+                <p style="color: var(--text-main); white-space: pre-wrap; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5;">${message}</p>
+                <div style="display: flex; gap: 15px; justify-content: center;">
+                    <button class="btn-secondary cancel-btn">Cancelar</button>
+                    <button class="btn-primary confirm-btn">Aceptar</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        overlay.querySelector('.cancel-btn').addEventListener('click', () => { overlay.remove(); resolve(false); });
+        overlay.querySelector('.confirm-btn').addEventListener('click', () => { overlay.remove(); resolve(true); });
+    });
+};

@@ -42,6 +42,7 @@
             <div class="nav-links">
                 <button class="nav-btn active" onclick="adminApp.navigate('overview')"><span class="material-symbols-outlined">dashboard</span> Inicio</button>
                 <button class="nav-btn" onclick="adminApp.navigate('events')"><span class="material-symbols-outlined">event</span> Eventos</button>
+                <button class="nav-btn" onclick="adminApp.navigate('cities')"><span class="material-symbols-outlined">location_city</span> Ciudades</button>
                 <button class="nav-btn" onclick="adminApp.navigate('categories')"><span class="material-symbols-outlined">category</span> Categorías</button>
                 <button class="nav-btn" onclick="adminApp.navigate('sales')"><span class="material-symbols-outlined">receipt_long</span> Ventas</button>
             </div>
@@ -123,13 +124,7 @@
                             <input type="text" id="ev-id" placeholder="Código (ej. EVT-001)" required>
                             <input type="text" id="ev-name" placeholder="Nombre del Concierto" required>
                             <select id="ev-category" required><option value="">Seleccionar Categoría</option></select>
-                            <select id="ev-city" required>
-                                <option value="">Ciudad</option>
-                                <option value="Bogotá">Bogotá</option>
-                                <option value="Medellín">Medellín</option>
-                                <option value="Barranquilla">Barranquilla</option>
-                                <option value="Bucaramanga">Bucaramanga</option>
-                            </select>
+                            <select id="ev-city" required><option value="">Seleccionar Ciudad</option></select>
                             <input type="date" id="ev-date" required>
                             <input type="time" id="ev-time" required>
                             <input type="number" id="ev-price" placeholder="Precio ($)" required>
@@ -144,6 +139,29 @@
                 </div>
 
                 <div id="admin-events-list" class="list-container"></div>
+            </div>
+
+            <div id="subview-cities" class="sub-view" style="display: none;">
+                <div class="header-action">
+                    <h2>Gestión de Ciudades</h2>
+                    <button class="btn-primary" onclick="adminApp.toggleForm('city-form-container')">+ Agregar Ciudad</button>
+                </div>
+
+                <div id="city-form-container" class="form-card" style="display: none;">
+                    <h3 id="city-form-title">Agregar Ciudad</h3>
+                    <form id="form-city">
+                        <input type="hidden" id="city-id-original" value="">
+                        <div class="form-grid" style="grid-template-columns: 1fr 2fr;">
+                            <input type="text" id="city-code" placeholder="Código (ej. BOG)" required>
+                            <input type="text" id="city-name" placeholder="Nombre de la Ciudad" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" onclick="adminApp.toggleForm('city-form-container')">Cancelar</button>
+                            <button type="submit" class="btn-primary">Guardar Ciudad</button>
+                        </div>
+                    </form>
+                </div>
+                <div id="admin-cities-list" class="list-container"></div>
             </div>
 
             <div id="subview-categories" class="sub-view" style="display: none;">
