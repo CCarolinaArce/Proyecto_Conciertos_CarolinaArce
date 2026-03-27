@@ -70,4 +70,103 @@ class EventCard extends HTMLElement {
     }
 }
 
+class KpiCard extends HTMLElement {
+    constructor() {
+        super();
+    }
+
+    connectedCallback() {
+        const label = this.getAttribute('data-label');
+        const value = this.getAttribute('data-value');
+        const icon = this.getAttribute('data-icon');
+
+        this.innerHTML = `
+            <style>
+                .kpi-card {
+                    background: var(--bg-card);
+                    border: 1px solid var(--border);
+                    border-radius: 20px;
+                    padding: 25px;
+                    transition: 0.3s ease;
+                }
+                .kpi-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 20px;
+                }
+                .kpi-icon {
+                    background: rgba(168, 85, 247, 0.1);
+                    color: var(--primary);
+                    width: 45px;
+                    height: 45px;
+                    border-radius: 12px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+                .kpi-label {
+                    color: var(--text-muted);
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                    margin-bottom: 5px;
+                }
+                .kpi-value {
+                    font-size: 2.2rem;
+                    color: var(--text-main);
+                }
+            </style>
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-icon">
+                        <span class="material-symbols-outlined">${icon}</span>
+                    </div>
+                </div>
+                <p class="kpi-label">${label}</p>
+                <h3 class="kpi-value">${value}</h3>
+            </div>
+        `;
+    }
+}
+
+class CartItemCard extends HTMLElement {
+    constructor() {
+        super();
+    }
+
+    connectedCallback() {
+        const id = this.getAttribute('data-id');
+        const name = this.getAttribute('data-name');
+        const image = this.getAttribute('data-image');
+        const price = this.getAttribute('data-price');
+        const qty = this.getAttribute('data-qty');
+
+        this.innerHTML = `
+            <style>
+                .cart-item { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid var(--border); }
+                .cart-item-info { display: flex; gap: 15px; align-items: center; }
+                .cart-item img { width: 70px; height: 70px; border-radius: 12px; object-fit: cover; }
+                .cart-item h4 { margin: 0; font-size: 1.1rem; margin-bottom: 5px; }
+                .cart-item p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
+                .btn-icon { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); padding: 10px; border-radius: 10px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+            </style>
+            <div class="cart-item">
+                <div class="cart-item-info">
+                    <img src="${image}" alt="${name}">
+                    <div>
+                        <h4>${name}</h4>
+                        <p>Cantidad: <span style="color:var(--text-main); font-weight:bold;">${qty}</span></p>
+                        <p style="margin-top: 4px; font-size: 0.9rem; color: var(--primary); font-weight: bold;">$${Number(price).toLocaleString('es-CO')}</p>
+                    </div>
+                </div>
+                <button class="btn-icon" onclick="app.removeFromCart('${id}')" title="Eliminar del carrito">
+                    <span class="material-symbols-outlined">delete</span>
+                </button>
+            </div>
+        `;
+    }
+}
+
 customElements.define('event-card', EventCard);
+customElements.define('kpi-card', KpiCard);
+customElements.define('cart-item-card', CartItemCard);

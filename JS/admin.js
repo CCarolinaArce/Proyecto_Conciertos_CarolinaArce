@@ -71,17 +71,19 @@ const adminApp = {
         const sales = getData('sales');
         const categories = getData('categories');
 
-        // 1. Calcular Totales
+        // 1. Calcular y renderizar Totales con el Web Component
         const totalEvents = events.length;
         const totalSales = sales.reduce((acc, sale) => acc + sale.total, 0);
         const totalCategories = categories.length;
 
-        // 2. Pintar los números en las tarjetas
-        document.getElementById('kpi-total-events').innerText = totalEvents;
-        document.getElementById('kpi-total-sales').innerText = '$' + totalSales.toLocaleString('es-CO');
-        document.getElementById('kpi-total-categories').innerText = totalCategories;
+        const kpiContainer = document.getElementById('kpi-grid'); // Asumiendo que este ID existe en tu HTML
+        kpiContainer.innerHTML = `
+            <kpi-card data-label="Total Ventas" data-value="$${totalSales.toLocaleString('es-CO')}" data-icon="point_of_sale"></kpi-card>
+            <kpi-card data-label="Eventos Activos" data-value="${totalEvents}" data-icon="festival"></kpi-card>
+            <kpi-card data-label="Categorías" data-value="${totalCategories}" data-icon="category"></kpi-card>
+        `;
 
-        // 3. Pintar los próximos eventos (Tomamos los primeros 3)
+        // 2. Pintar los próximos eventos (Tomamos los primeros 3)
         const overviewEventsList = document.getElementById('overview-events-list');
         
         // Ordenar eventos por fecha más próxima (opcional, aquí solo limitamos a 3 para el resumen)

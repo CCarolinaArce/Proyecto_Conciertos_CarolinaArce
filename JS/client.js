@@ -172,21 +172,13 @@ const app = {
         container.innerHTML = cart.map((item) => {
             const subtotal = item.price * item.qty;
             total += subtotal;
-            return `
-                <div class="cart-item">
-                    <div style="display: flex; gap: 15px; align-items: center;">
-                        <img src="${item.image}" style="width: 70px; height: 70px; border-radius: 12px; object-fit: cover;">
-                        <div>
-                            <h4 style="margin: 0; font-size: 1.1rem; margin-bottom: 5px;">${item.name}</h4>
-                            <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted);">Cantidad: <span style="color:var(--text-main); font-weight:bold;">${item.qty}</span></p>
-                            <p style="margin: 2px 0 0 0; font-size: 0.9rem; color: var(--primary); font-weight: bold;">$${Number(item.price).toLocaleString('es-CO')}</p>
-                        </div>
-                    </div>
-                    <button class="btn-icon danger" onclick="app.removeFromCart('${item.id}')" style="background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); padding: 10px; border-radius: 10px; cursor:pointer;">
-                        <span class="material-symbols-outlined">delete</span>
-                    </button>
-                </div>
-            `;
+            return `<cart-item-card
+                        data-id="${item.id}"
+                        data-name="${item.name}"
+                        data-image="${item.image}"
+                        data-price="${item.price}"
+                        data-qty="${item.qty}"
+                    ></cart-item-card>`;
         }).join('');
         
         totalEl.innerText = total.toLocaleString('es-CO');
